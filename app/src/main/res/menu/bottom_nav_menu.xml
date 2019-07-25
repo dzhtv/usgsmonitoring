@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/earthquakes"
+        android:title="@string/earthquakes_label" />
+
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/cloud"
+        android:title="@string/weather_label" />
+
+    <item
+        android:id="@+id/navigation_other"
+        android:icon="@drawable/settings"
+        android:title="@string/other_label" />
+
+</menu>
