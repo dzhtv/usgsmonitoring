@@ -18,56 +18,53 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by izhut on 14.01.2019.
- */
-
 public class EarthquakesAdapter extends ArrayAdapter<Feature>{
     private final int placeStep = 2;
+    private ViewHolder holder;
+    private LayoutInflater _inflater;
+    private int resource;
+    private List<Feature> _items;
 
-    public EarthquakesAdapter(Context context, List<Feature> earthquakes) {
+    public EarthquakesAdapter(Context context, int resource, List<Feature> earthquakes) {
         super(context, 0, earthquakes);
+        this.resource = resource;
+        this._items = earthquakes;
+        this._inflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
-        Feature earthquake = getItem(position);
         if (convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.earthquake_item, parent, false);
+            convertView = _inflater.inflate(this.resource, parent, false);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
+        }else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        TextView magnitudeTextView = (TextView) convertView.findViewById(R.id.magnitude);
-        TextView locationKmTextView = (TextView) convertView.findViewById(R.id.location_offset);
-        TextView locationPlaceTextView = (TextView) convertView.findViewById(R.id.primary_location);
-        TextView dateTextView = (TextView) convertView.findViewById(R.id.date);
-        TextView timeTextView = (TextView) convertView.findViewById(R.id.time);
-
+        Feature earthquake = _items.get(position);
         String magnitude = earthquake.getProperties().getMag().toString();
 
-        GradientDrawable magnitudeCircle = (GradientDrawable) magnitudeTextView.getBackground();
-        int magnitudeColor = getMagnitudeColor(magnitude);
-        magnitudeCircle.setColor(magnitudeColor);
+        GradientDrawable magnitudeCircle = (GradientDrawable) holder.magnitude.getBackground();
+        //int magnitudeColor = getMagnitudeColor(magnitude);
+        magnitudeCircle.setColor(getMagnitudeColor(magnitude));
 
-        magnitudeTextView.setText(magnitude);
+        holder.magnitude.setText(magnitude);
 
         String location = earthquake.getProperties().getPlace();
         int splitIndex = location.indexOf("of");
-
         if (splitIndex != -1 ){
-            locationKmTextView.setText(location.substring(0, splitIndex + placeStep).trim());
-            locationPlaceTextView.setText(location.substring(splitIndex + placeStep).trim());
-        }
-        else {
-            locationKmTextView.setText(getContext().getText(R.string.nearThe));
-            locationPlaceTextView.setText(location);
+            holder.locationKm.setText(location.substring(0, splitIndex + placeStep).trim());
+            holder.locationPlace.setText(location.substring(splitIndex + placeStep).trim());
+        } else {
+            holder.locationKm.setText(getContext().getText(R.string.nearThe));
+            holder.locationPlace.setText(location);
         }
 
         Date dateObject = new Date(earthquake.getProperties().getTime());
-
-        dateTextView.setText(formatDate(dateObject));
-        timeTextView.setText(formatTime(dateObject));
+        holder.date.setText(formatDate(dateObject));
+        holder.time.setText(formatTime(dateObject));
 
         return convertView;
     }
@@ -76,9 +73,7 @@ public class EarthquakesAdapter extends ArrayAdapter<Feature>{
         int colorResource = ContextCompat.getColor(getContext(), R.color.magnitude1);
         int magnitudeInt = (int) Math.floor(Double.parseDouble(magnitude));
 
-        switch (magnitudeInt)
-        {
-            case 0:
+        switch (magnitudeInt) {
             case 1:
                 break;
             case 2:
@@ -120,5 +115,17 @@ public class EarthquakesAdapter extends ArrayAdapter<Feature>{
     private String formatTime(Date dateObject) {
         SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
         return timeFormat.format(dateObject);
+    }
+
+    private class ViewHolder{
+        private TextView magnitude, locationKm, locationPlace, date, time;
+
+        public ViewHolder(View view){
+            magnitude = view.findViewById(R.id.magnitude);
+            locationKm =  view.findViewById(R.id.location_offset);
+            locationPlace =  view.findViewById(R.id.primary_location);
+            date =  view.findViewById(R.id.date);
+            time =  view.findViewById(R.id.time);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.dzhtv.izhut.usgsmonitoring;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.dzhtv.izhut.usgsmonitoring.api.IEarthquakeApi;
 import com.dzhtv.izhut.usgsmonitoring.api.INasaApi;
@@ -9,7 +8,11 @@ import com.dzhtv.izhut.usgsmonitoring.api.IWeatherApi;
 import com.dzhtv.izhut.usgsmonitoring.components.ApplicationComponent;
 import com.dzhtv.izhut.usgsmonitoring.components.DaggerApplicationComponent;
 import com.dzhtv.izhut.usgsmonitoring.modules.AppModule;
+import com.dzhtv.izhut.usgsmonitoring.presenters.NasaApodPresenter;
 import com.dzhtv.izhut.usgsmonitoring.services.ProviderGoogleAPI;
+import com.dzhtv.izhut.usgsmonitoring.presenters.EarthquakePresenter;
+import com.dzhtv.izhut.usgsmonitoring.presenters.MarsRoverPresenter;
+import com.dzhtv.izhut.usgsmonitoring.presenters.WeatherPresenter;
 import com.squareup.picasso.Picasso;
 
 
@@ -27,28 +30,40 @@ public class App extends Application {
 
     private ApplicationComponent _component;
     ProviderGoogleAPI googleProvider;
+    EarthquakePresenter earthPresenter;
+    WeatherPresenter weatherPresenter;
+    MarsRoverPresenter mMarsRoverPresenter;
+    NasaApodPresenter nasaApodPresenter;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        initDI();
         initRetrofitAPI();
+        initDI();
     }
 
     private void initDI(){
+
         _component = DaggerApplicationComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
         _component.inject(this);
         googleProvider = _component.getProviderGoogleApi();
+        earthPresenter = _component.provideEarthquakePresenter();
+        weatherPresenter = _component.provideWeatherPresenter();
+        mMarsRoverPresenter = _component.provideOtherPresenter();
+        nasaApodPresenter = _component.provideNasaApodPresenter();
+
     }
+
     /**
      * init retrofit api
      */
     private void initRetrofitAPI(){
         earthquakeApi = new Retrofit.Builder()
-                .baseUrl(Config.BASE_URL)
+                .baseUrl(Config.EARTHQUAKE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build();
@@ -87,5 +102,21 @@ public class App extends Application {
 
     public ProviderGoogleAPI getProviderGoogleApi(){
         return googleProvider;
+    }
+
+    public EarthquakePresenter getEarthquakePresenter(){
+        return earthPresenter;
+    }
+
+    public WeatherPresenter getWeatherPresenter(){
+        return weatherPresenter;
+    }
+
+    public MarsRoverPresenter getMarsRoverPresenter(){
+        return mMarsRoverPresenter;
+    }
+
+    public NasaApodPresenter getNasaApodPresenter(){
+        return nasaApodPresenter;
     }
 }

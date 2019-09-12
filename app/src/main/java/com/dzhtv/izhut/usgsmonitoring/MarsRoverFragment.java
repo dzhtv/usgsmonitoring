@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -22,26 +20,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dzhtv.izhut.usgsmonitoring.adapters.NasaPhotosAdapter;
 import com.dzhtv.izhut.usgsmonitoring.models.nasa.Photo;
-import com.dzhtv.izhut.usgsmonitoring.ui.other.OtherPresenter;
-import com.dzhtv.izhut.usgsmonitoring.ui.other.OtherView;
+import com.dzhtv.izhut.usgsmonitoring.presenters.MarsRoverPresenter;
+import com.dzhtv.izhut.usgsmonitoring.views.MarsRoverView;
 
 import java.util.List;
 
 
-public class OtherFragment extends BaseFragment implements OtherView {
+public class MarsRoverFragment extends BaseFragment implements MarsRoverView {
     private View rootView;
     private ViewHolder holder;
     private List<Photo> photoData;
     private NasaPhotosAdapter _adapter;
     private RecyclerView.LayoutManager lManager;
 
-    OtherPresenter presenter;
+    MarsRoverPresenter presenter;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_other, container, false);
-        presenter = ((MainActivity)getActivity()).getOtherPresenter();
+        rootView = inflater.inflate(R.layout.fragment_mars_rover, container, false);
+        presenter = ((App)getActivity().getApplication()).getMarsRoverPresenter();
         holder = new ViewHolder(rootView);
 
         presenter.onAttach(this);
@@ -115,7 +114,7 @@ public class OtherFragment extends BaseFragment implements OtherView {
         private Button searchBtn;
         private RecyclerView photosList;
         private ProgressBar progressBar;
-        private LinearLayout emptyContainer;
+        private LinearLayout emptyContainer, connectionContainer;
 
         public ViewHolder(View view){
             solField = (EditText)view.findViewById(R.id.sol_field);
@@ -123,13 +122,14 @@ public class OtherFragment extends BaseFragment implements OtherView {
             photosList = (RecyclerView) view.findViewById(R.id.listViewRoverPhotos);
             progressBar = (ProgressBar)view.findViewById(R.id.loading_spinner);
             emptyContainer = (LinearLayout) view.findViewById(R.id.empty_container);
+            connectionContainer = view.findViewById(R.id.connection_container);
 
-            searchBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(App.TAG, "Search click");
-                    hideKeyboard();
+            searchBtn.setOnClickListener(v -> {
+                hideKeyboard();
+                if (checkInternetConnection())
                     presenter.clickSearchBtn();
+                else{
+                    connectionContainer.setVisibility(View.VISIBLE);
                 }
             });
         }

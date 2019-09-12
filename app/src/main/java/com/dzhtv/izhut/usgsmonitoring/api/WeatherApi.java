@@ -54,6 +54,9 @@ public class WeatherApi {
     }
 
     public void loadByCoords(double lat, double lng, WeatherCallback callback){
+        Log.d(App.TAG, "WeatherApi, loadByCoords");
+        if (wApi == null)
+            Log.d(App.TAG, "WeatherApi, wApi == null!!");
         Observable<WeatherData> dataObservable = wApi.getByCoords(lat, lng, Config.WEATHER_KEY_APPID, Config.WEATHER_UNITS);
         dataObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

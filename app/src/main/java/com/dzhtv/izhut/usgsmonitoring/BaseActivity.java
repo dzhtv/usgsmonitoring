@@ -1,6 +1,9 @@
 package com.dzhtv.izhut.usgsmonitoring;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +21,8 @@ import okhttp3.internal.Util;
 
 public class BaseActivity extends AppCompatActivity {
     protected List<String> neededPermissions;
+    //protected ConnectivityManager connMgr;
+   // protected NetworkInfo networkInfo;
 
     protected boolean checkAndRequestPermissions() {
         neededPermissions = new ArrayList<>();
@@ -39,6 +44,16 @@ public class BaseActivity extends AppCompatActivity {
         return neededPermissions;
     }
 
+    /*
 
+    protected boolean checkConnection(){
+        connMgr = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+    */
 
 }

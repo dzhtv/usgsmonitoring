@@ -1,4 +1,4 @@
-package com.dzhtv.izhut.usgsmonitoring.ui.weather;
+package com.dzhtv.izhut.usgsmonitoring.views;
 
 import com.dzhtv.izhut.usgsmonitoring.ui.base.MvpView;
 

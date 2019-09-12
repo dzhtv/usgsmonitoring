@@ -1,4 +1,4 @@
-package com.dzhtv.izhut.usgsmonitoring.ui.earthquake;
+package com.dzhtv.izhut.usgsmonitoring.views;
 
 import com.dzhtv.izhut.usgsmonitoring.models.earthquake.Feature;
 import com.dzhtv.izhut.usgsmonitoring.ui.base.MvpView;

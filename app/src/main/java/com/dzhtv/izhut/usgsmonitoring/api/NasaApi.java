@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.dzhtv.izhut.usgsmonitoring.App;
 import com.dzhtv.izhut.usgsmonitoring.callbacks.NasaDataRoverCallback;
+import com.dzhtv.izhut.usgsmonitoring.callbacks.SimpleCallback;
+import com.dzhtv.izhut.usgsmonitoring.models.nasa.NasaApodResponse;
 import com.dzhtv.izhut.usgsmonitoring.models.nasa.NasaRoverData;
 import com.google.gson.Gson;
 
@@ -19,9 +21,11 @@ import rx.schedulers.Schedulers;
 public class NasaApi {
     private static NasaApi instance;
     private INasaApi service;
+    private Gson gson;
 
     private NasaApi(){
         service = App.getNasaApi();
+        gson = new Gson();
     }
 
     public static NasaApi getInstance(){
@@ -54,7 +58,6 @@ public class NasaApi {
 
                     @Override
                     public void onNext(NasaRoverData nasaRoverData) {
-                        Gson gson = new Gson();
                         Log.d(App.TAG, "Load photos from rover onNext " + gson.toJson(nasaRoverData, NasaRoverData.class));
                         callback.onSuccessRoverData(nasaRoverData);
                     }
@@ -69,4 +72,35 @@ public class NasaApi {
             return e.getMessage();
         }
     }
+
+    public void loadApod(String api_key, SimpleCallback<NasaApodResponse> callback){
+        if (callback == null)
+            return;
+        Observable<NasaApodResponse> _observable = service.loadApod(api_key);
+        _observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<NasaApodResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        callback.onCompleted();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof HttpException){
+                            ResponseBody body = ((HttpException) e).response().errorBody();
+                            Log.d(App.TAG, makeJSONString(body));
+                        }
+                        callback.onError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(NasaApodResponse nasaApodResponse) {
+                        Log.d(App.TAG, "Apod onNext: " + gson.toJson(nasaApodResponse, NasaApodResponse.class));
+                        callback.onSuccess(nasaApodResponse);
+                    }
+                });
+    }
+
+
 }

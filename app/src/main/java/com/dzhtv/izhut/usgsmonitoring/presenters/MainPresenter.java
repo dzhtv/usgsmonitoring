@@ -1,20 +1,15 @@
-package com.dzhtv.izhut.usgsmonitoring.ui.main;
+package com.dzhtv.izhut.usgsmonitoring.presenters;
 
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.provider.Settings;
 import android.util.Log;
-
-import androidx.appcompat.app.AlertDialog;
 
 import com.dzhtv.izhut.usgsmonitoring.App;
 import com.dzhtv.izhut.usgsmonitoring.Config;
-import com.dzhtv.izhut.usgsmonitoring.R;
+import com.dzhtv.izhut.usgsmonitoring.contracts.MainMvpPresenter;
 import com.dzhtv.izhut.usgsmonitoring.events.PermissionsAccess;
 import com.dzhtv.izhut.usgsmonitoring.ui.base.BasePresenter;
+import com.dzhtv.izhut.usgsmonitoring.views.MainMvpView;
 
 import java.util.HashMap;
 import java.util.Map;

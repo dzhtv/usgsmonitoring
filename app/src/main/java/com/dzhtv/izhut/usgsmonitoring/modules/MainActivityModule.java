@@ -4,22 +4,17 @@ import android.content.Context;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.dzhtv.izhut.usgsmonitoring.OtherFragment;
+import com.dzhtv.izhut.usgsmonitoring.NasaFragment;
+import com.dzhtv.izhut.usgsmonitoring.MarsRoverFragment;
 import com.dzhtv.izhut.usgsmonitoring.Utils;
 import com.dzhtv.izhut.usgsmonitoring.dialog.ActivateGPSDialog;
-import com.dzhtv.izhut.usgsmonitoring.ui.earthquake.EarthquakeFragment;
+import com.dzhtv.izhut.usgsmonitoring.EarthquakeFragment;
 import com.dzhtv.izhut.usgsmonitoring.MainActivity;
 import com.dzhtv.izhut.usgsmonitoring.WeatherFragment;
 import com.dzhtv.izhut.usgsmonitoring.components.USGSMonitoringApplicationScope;
-import com.dzhtv.izhut.usgsmonitoring.ui.earthquake.EarthquakeMvpView;
-import com.dzhtv.izhut.usgsmonitoring.ui.earthquake.EarthquakePresenter;
-import com.dzhtv.izhut.usgsmonitoring.ui.main.MainMvpPresenter;
-import com.dzhtv.izhut.usgsmonitoring.ui.main.MainMvpView;
-import com.dzhtv.izhut.usgsmonitoring.ui.main.MainPresenter;
-import com.dzhtv.izhut.usgsmonitoring.ui.other.OtherPresenter;
-import com.dzhtv.izhut.usgsmonitoring.ui.other.OtherView;
-import com.dzhtv.izhut.usgsmonitoring.ui.weather.WeatherMvpView;
-import com.dzhtv.izhut.usgsmonitoring.ui.weather.WeatherPresenter;
+import com.dzhtv.izhut.usgsmonitoring.contracts.MainMvpPresenter;
+import com.dzhtv.izhut.usgsmonitoring.views.MainMvpView;
+import com.dzhtv.izhut.usgsmonitoring.presenters.MainPresenter;
 
 import javax.inject.Named;
 
@@ -58,8 +53,14 @@ public class MainActivityModule {
 
     @USGSMonitoringApplicationScope
     @Provides
-    public OtherFragment otherFragment(){
-        return new OtherFragment();
+    public MarsRoverFragment otherFragment(){
+        return new MarsRoverFragment();
+    }
+
+    @USGSMonitoringApplicationScope
+    @Provides
+    public NasaFragment nasaFragment(){
+        return new NasaFragment();
     }
 
     @Provides
@@ -74,6 +75,7 @@ public class MainActivityModule {
         return _context;
     }
 
+    /*
     @Provides
     public EarthquakePresenter<EarthquakeMvpView> getEarthquakePresenter(){
         return new EarthquakePresenter<EarthquakeMvpView>();
@@ -86,9 +88,10 @@ public class MainActivityModule {
 
     @USGSMonitoringApplicationScope
     @Provides
-    public OtherPresenter<OtherView> getOtherPresenter(){
-        return new OtherPresenter<OtherView>();
+    public MarsRoverPresenter<MarsRoverView> getMarsRoverPresenter(){
+        return new MarsRoverPresenter<MarsRoverView>();
     }
+    */
 
     @Provides
     public ActivateGPSDialog provideActivateGPSDialog(){

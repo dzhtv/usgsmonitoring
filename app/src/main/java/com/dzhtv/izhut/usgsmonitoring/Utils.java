@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 
-import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
@@ -14,6 +13,40 @@ public class Utils {
 
     public Utils(Context context){
         this._context = context;
+    }
+
+    /**
+     * Возвращает нужно ли показывать экран с анимацией
+     * @param context
+     * @return
+     */
+    public static boolean showSunsetActivity(Context context){
+        SharedPreferences pref = context.getSharedPreferences(Config.SUNSET_VISIBLE_FLAG, Context.MODE_PRIVATE);
+        if (pref.contains("sunset")){
+            int flag = pref.getInt("sunset", 0);
+            if (flag == 1){
+                return false;
+            } else {
+                saveIntDataToPreferences(context, "sunset", 1);
+                return true;
+            }
+        }else {
+            saveIntDataToPreferences(context, "sunset", 1);
+            return true;
+        }
+    }
+
+    /**
+     * Сохранение инта локально
+     * @param context
+     * @param key
+     * @param value
+     */
+    public static void saveIntDataToPreferences(Context context, String key, int value){
+        SharedPreferences.Editor editor = context.getSharedPreferences(Config.SUNSET_VISIBLE_FLAG, Context.MODE_PRIVATE).edit();
+        editor.putInt(key, value);
+        editor.apply();
+        editor.commit();
     }
     /**
      * Сохранение локально объекта Gson

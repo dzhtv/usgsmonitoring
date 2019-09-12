@@ -126,6 +126,25 @@
                 android:padding="5dp"
                 android:visibility="visible"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/connection_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_internet_connection"
+                android:textSize="18dp"
+                android:textColor="@color/grayBack"
+                android:padding="5dp"
+                android:visibility="visible"/>
+        </LinearLayout>
     </FrameLayout>
 
 </RelativeLayout>

@@ -25,11 +25,13 @@ public class ProviderGoogleAPI implements GoogleApiClient.ConnectionCallbacks, G
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        Log.d(App.TAG, "Provider constructor");
     }
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d(App.TAG, "Provider onConnected");
         if (callback != null)
             callback.onProviderConnected();
     }
@@ -41,7 +43,7 @@ public class ProviderGoogleAPI implements GoogleApiClient.ConnectionCallbacks, G
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.d(App.TAG, "Provider onConnectionFailed");
     }
 
     @Override

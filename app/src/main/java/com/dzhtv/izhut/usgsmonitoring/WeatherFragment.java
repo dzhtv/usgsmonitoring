@@ -7,31 +7,28 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.dzhtv.izhut.usgsmonitoring.callbacks.PermissionsCallback;
 import com.dzhtv.izhut.usgsmonitoring.callbacks.ProviderGoogleCallback;
 import com.dzhtv.izhut.usgsmonitoring.events.PermissionsAccess;
-import com.dzhtv.izhut.usgsmonitoring.ui.weather.WeatherMvpView;
-import com.dzhtv.izhut.usgsmonitoring.ui.weather.WeatherPresenter;
+import com.dzhtv.izhut.usgsmonitoring.views.WeatherMvpView;
+import com.dzhtv.izhut.usgsmonitoring.presenters.WeatherPresenter;
 import com.dzhtv.izhut.usgsmonitoring.services.ProviderGoogleAPI;
-import com.dzhtv.izhut.usgsmonitoring.views.WeatherView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 public class WeatherFragment extends BaseFragment implements WeatherMvpView, PermissionsCallback {
@@ -45,7 +42,7 @@ public class WeatherFragment extends BaseFragment implements WeatherMvpView, Per
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_weather, container, false);
-        presenter = ((MainActivity)getActivity()).getWeatherPresenter();
+        presenter = ((App)getActivity().getApplication()).getWeatherPresenter();
         holder = new ViewHolder(rootView);
         holder.progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat
                 .getColor(getActivity(), R.color.colorPrimaryDark), PorterDuff.Mode.MULTIPLY);
@@ -59,33 +56,38 @@ public class WeatherFragment extends BaseFragment implements WeatherMvpView, Per
     @Override
     public void onStart() {
         super.onStart();
+
         EventBus.getDefault().register(this);
         if (checkAndRequestPermissions()){
-            Log.d(App.TAG, "Check Permissions true");
-            assembleLoadingWeather();
+            if (checkInternetConnection()){
+
+                assembleLoadingWeather(false);
+
+            }else {
+                holder.location_container.setVisibility(View.GONE);
+                holder.weather_container.setVisibility(View.GONE);
+                holder.errorTxt.setVisibility(View.VISIBLE);
+                holder.errorTxt.setText(getString(R.string.no_internet_connection));
+                holder.progressBar.setVisibility(View.GONE);
+            }
         }else {
-            Log.d(App.TAG, "Check Permissions false");
-            //hide progressBar
             holder.progressBar.setVisibility(View.GONE);
         }
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(App.TAG, "WeatherFragment, onStop");
         EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(App.TAG, "WeatherFragment, onDestroy");
         presenter.onDetach();
     }
 
-    private void assembleLoadingWeather(){
+    private void assembleLoadingWeather(boolean isRefresh){
         holder.location_container.setVisibility(View.GONE);
         holder.weather_container.setVisibility(View.VISIBLE);
 
@@ -108,15 +110,14 @@ public class WeatherFragment extends BaseFragment implements WeatherMvpView, Per
                     Log.d(App.TAG, "onProviderConnected");
                     Location lastLoc = _provider.getLastLocation();
                     if (lastLoc != null)
-                        presenter.loadByCoords(lastLoc.getLatitude(), lastLoc.getLongitude());
+                        presenter.loadByCoords(lastLoc.getLatitude(), lastLoc.getLongitude(), isRefresh);
                     else {
-                        Log.d(App.TAG, "onProviderConnected, last location null");
+                        onShowErrorMessage(getString(R.string.error_getting_last_location));
                         hideLoadingIndicator();
                     }
                 }
             });
         }
-
     }
 
     @Override
@@ -129,7 +130,7 @@ public class WeatherFragment extends BaseFragment implements WeatherMvpView, Per
     public void onMessageEvent(PermissionsAccess obj){
         Log.d(App.TAG, "WeatherFragment, onMessageEvent");
         holder.progressBar.setVisibility(View.VISIBLE);
-        assembleLoadingWeather();
+        assembleLoadingWeather(false);
     }
 
 
@@ -155,38 +156,44 @@ public class WeatherFragment extends BaseFragment implements WeatherMvpView, Per
 
     @Override
     public void setTemp(int temp) {
+        holder.temp.setText("");
         holder.temp.setText(temp + "");
     }
 
     @Override
     public void setMinTemp(int minTemp) {
+        holder.temp_min.setText("");
         holder.temp_min.setText(minTemp + "");
     }
 
     @Override
     public void setMaxTemp(int maxTemp) {
+        holder.temp_max.setText("");
         holder.temp_max.setText(maxTemp + "");
     }
 
     @Override
     public void setHumidity(int hum) {
+        holder.humidity.setText("");
         holder.humidity.setText(hum + "");
     }
 
     @Override
     public void setPressure(int pressure) {
+        holder.pressure.setText("");
         holder.pressure.setText(pressure + "");
     }
 
     @Override
     public void setDescription(String desc) {
+        holder.description.setText("");
         holder.description.setText(desc);
     }
 
     private class ViewHolder{
         private TextView errorTxt, temp, temp_min, temp_max, pressure, humidity, description;
         private ProgressBar progressBar;
-        private FrameLayout weather_container;
+        private SwipeRefreshLayout weather_container;
         private LinearLayout location_container;
         private Button requestLocationBtn;
 
@@ -201,14 +208,16 @@ public class WeatherFragment extends BaseFragment implements WeatherMvpView, Per
             description = (TextView)view.findViewById(R.id.description);
             humidity = (TextView)view.findViewById(R.id.humidity);
             location_container = (LinearLayout)view.findViewById(R.id.info_location_container);
-            weather_container = (FrameLayout)view.findViewById(R.id.container_weather_item);
+            weather_container = (SwipeRefreshLayout) view.findViewById(R.id.container_weather_item);
+            weather_container.setOnRefreshListener(() -> {
+                weather_container.setRefreshing(false);
+                Log.d(App.TAG, "WeatherFragment, onRefresh");
+                assembleLoadingWeather(true);
+            });
 
-            requestLocationBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(App.TAG, "WeatherFragment, onClickRequestLocation");
-                    presenter.clickRequestPermissions();
-                }
+            requestLocationBtn.setOnClickListener(v -> {
+                Log.d(App.TAG, "WeatherFragment, onClickRequestLocation");
+                presenter.clickRequestPermissions();
             });
         }
 

@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
@@ -18,6 +19,35 @@
         app:layout_constraintRight_toRightOf="parent">
 
 
+        <!--<LinearLayout
+            android:id="@+id/warning_label"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="@color/bright_sun"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+
+            android:layout_marginTop="-40dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/warning"
+                android:layout_marginLeft="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_internet_connection"
+                android:textSize="18dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="0.3"/>
+
+        </LinearLayout>-->
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

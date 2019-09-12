@@ -29,5 +29,9 @@
     <string name="other_label">Other</string>
     <string name="load_photos_info">Получить фотографии с марсохода Curiosity, по определенной дате (солу). В диапазоне от 1 до 2463</string>
     <string name="warning_on_gps">Необходимо включить GPS</string>
+    <string name="error_getting_last_location">Не получилось получить геолокацию. Перезапустите GPS или повторите попытку позже</string>
+    <string name="date_label">Дата </string>
+    <string name="network_connect">Интернет соединение восстановлено</string>
+    <string name="network_disconnect">Соединение отсутствует</string>
 
 </resources>
