@@ -71,7 +71,7 @@ public class NasaFragment extends Fragment {
             //add back stack
             fm.beginTransaction()
                     .replace(R.id.frame_container, _frag)
-                    .addToBackStack("1")
+                    //.addToBackStack("1")
                     .commit();
         }
     }
