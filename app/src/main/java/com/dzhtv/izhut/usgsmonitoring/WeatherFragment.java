@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.dzhtv.izhut.usgsmonitoring.callbacks.PermissionsCallback;
 import com.dzhtv.izhut.usgsmonitoring.callbacks.ProviderGoogleCallback;
 import com.dzhtv.izhut.usgsmonitoring.events.PermissionsAccess;
+import com.dzhtv.izhut.usgsmonitoring.models.weather.Weather;
 import com.dzhtv.izhut.usgsmonitoring.views.WeatherMvpView;
 import com.dzhtv.izhut.usgsmonitoring.presenters.WeatherPresenter;
 import com.dzhtv.izhut.usgsmonitoring.services.ProviderGoogleAPI;
@@ -32,11 +33,20 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 public class WeatherFragment extends BaseFragment implements WeatherMvpView, PermissionsCallback {
+    private static WeatherFragment instance;
     private View rootView;
     private ViewHolder holder;
 
     WeatherPresenter presenter;
     ProviderGoogleAPI _provider;
+
+
+    public static WeatherFragment getInstance(){
+        if (instance == null)
+            instance = new WeatherFragment();
+        return instance;
+    }
+
 
     @Nullable
     @Override

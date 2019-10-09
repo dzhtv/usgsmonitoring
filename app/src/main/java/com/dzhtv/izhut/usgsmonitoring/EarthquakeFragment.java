@@ -16,6 +16,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dzhtv.izhut.usgsmonitoring.R;
 import com.dzhtv.izhut.usgsmonitoring.adapters.EarthquakesAdapter;
@@ -28,11 +29,19 @@ import java.util.List;
 
 public class EarthquakeFragment extends BaseFragment implements EarthquakeMvpView {
 
+    private static EarthquakeFragment instance;
     EarthquakePresenter presenter;
     private ViewHolder holder;
     private View rootView;
     private List<Feature> _earthquakes;
     private EarthquakesAdapter _adapter;
+
+
+    public static EarthquakeFragment getInstance(){
+        if (instance == null)
+            instance = new EarthquakeFragment();
+        return instance;
+    }
 
     @Nullable
     @Override
@@ -91,6 +100,11 @@ public class EarthquakeFragment extends BaseFragment implements EarthquakeMvpVie
     public void showNoConnectionMessage() {
         holder._loadingIndicator.setVisibility(View.GONE);
         holder._errorTextView.setText(R.string.no_internet_connection);
+    }
+
+    @Override
+    public void errorMessage(String errorMessage) {
+        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override

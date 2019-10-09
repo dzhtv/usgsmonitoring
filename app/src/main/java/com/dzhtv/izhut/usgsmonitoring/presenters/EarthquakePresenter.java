@@ -36,7 +36,9 @@ public class EarthquakePresenter<V extends EarthquakeMvpView> extends BasePresen
             _earthquakeApi.loadEarthquakes(new EarthquakesCallback() {
                 @Override
                 public void onError(String errorMsg) {
-
+                    getMvpView().hideLoadingIndicator();
+                    getMvpView().errorMessage(errorMsg);
+                    Log.e(App.TAG, errorMsg);
                 }
                 @Override
                 public void onSuccess(EarthquakeData data) {

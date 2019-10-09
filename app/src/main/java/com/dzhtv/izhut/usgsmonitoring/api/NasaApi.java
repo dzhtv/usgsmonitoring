@@ -34,12 +34,6 @@ public class NasaApi {
         return instance;
     }
 
-    /**
-     * Загрузка фотографий с марсохода
-     * @param sol
-     * @param apiKey
-     * @param callback
-     */
     public void loadPhotosFromRover(int sol, String apiKey, NasaDataRoverCallback callback){
         if (callback == null)
             return;
@@ -79,11 +73,6 @@ public class NasaApi {
         }
     }
 
-    /**
-     * Загрузка фото дня nasa
-     * @param api_key
-     * @param callback
-     */
     public void loadApod(String api_key, SimpleCallback<NasaApodResponse> callback){
         if (callback == null)
             return;
@@ -93,16 +82,14 @@ public class NasaApi {
                 .subscribe(new Observer<NasaApodResponse>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(App.TAG, "Apod onCompleted");
                         callback.onCompleted();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(App.TAG, "Apod onError: " + e.getMessage());
                         if (e instanceof HttpException){
                             ResponseBody body = ((HttpException) e).response().errorBody();
-                            Log.d(App.TAG, "Apod onError: " + makeJSONString(body));
+                            Log.d(App.TAG, makeJSONString(body));
                         }
                         callback.onError(e.getMessage());
                     }
@@ -114,5 +101,6 @@ public class NasaApi {
                     }
                 });
     }
+
 
 }

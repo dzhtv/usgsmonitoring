@@ -14,4 +14,6 @@ public class Config {
     public static final int REQUEST_PERMISSION_CODE = 1717;
     public static final int REQUEST_ON_GPS_IN_SETTINGS = 3033;
     public static final String SUNSET_VISIBLE_FLAG = "sunset_flag";
+
+
 }

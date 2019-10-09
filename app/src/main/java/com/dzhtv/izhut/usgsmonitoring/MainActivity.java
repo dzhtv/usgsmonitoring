@@ -7,16 +7,20 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import com.androidadvance.topsnackbar.TSnackbar;
@@ -62,6 +66,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     Utils appUtils;
 
     private BroadcastReceiver networkReceiver;
+    private boolean doubleBackToExitClick = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +79,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         EventBus.getDefault().register(this);
         networkReceiver = new NetworkConnectionReceiver();
         registerNetworkBroadcastForNougat();
-
 
         _presenter.onAttach(this);
         navView = findViewById(R.id.nav_view);
@@ -153,6 +158,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         if (item.getItemId() == navView.getSelectedItemId()){
             //do nothing
         }else {
+            clearBackStack(fm);
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     fm.beginTransaction().replace(R.id.frame_container, _earthquakeFragment)
@@ -170,6 +176,32 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         }
                 return false;
             };
+
+    private void clearBackStack(FragmentManager fragmentManager){
+        int count = fragmentManager.getBackStackEntryCount();
+        for (int i = 0; i < count; ++i){
+            fragmentManager.popBackStack();
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitClick){
+            super.onBackPressed();
+            return;
+        } else {
+            int stackSize = getSupportFragmentManager().getBackStackEntryCount();
+            if (stackSize == 0){
+                doubleBackToExitClick = true;
+                Toast.makeText(this, getString(R.string.please_click_again_to_exit), Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> doubleBackToExitClick = false, 2000);
+            } else {
+                super.onBackPressed();
+                return;
+            }
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

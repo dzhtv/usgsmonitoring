@@ -13,11 +13,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.dzhtv.izhut.usgsmonitoring.adapters.NasaCardAdapter;
+import com.dzhtv.izhut.usgsmonitoring.adapters.RecyclerItemClickListener;
+import com.dzhtv.izhut.usgsmonitoring.models.NasaCardView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NasaFragment extends Fragment {
+    private static NasaFragment instance;
+
     private View rootView;
     private ViewHolder holder;
     private FragmentManager fm;
+    private NasaCardAdapter cardAdapter;
+
+
+    public static NasaFragment newInstance(){
+        if (instance == null)
+            instance = new NasaFragment();
+        return instance;
+    }
 
     @Nullable
     @Override
@@ -31,47 +50,55 @@ public class NasaFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(App.TAG, "NasaFragment, onStart");
     }
 
     public class ViewHolder {
-        private LinearLayout list;
-        private TextView apod_item, rover_item;
         private FrameLayout container;
+        private RecyclerView recyclerView;
 
         public ViewHolder(View view){
-            list = (LinearLayout)view.findViewById(R.id.list_linear);
-            apod_item = (TextView)view.findViewById(R.id.apod_item);
-            rover_item = (TextView)view.findViewById(R.id.rover_item);
-            container = (FrameLayout)view.findViewById(R.id.nasa_fragment_container);
 
+            container = view.findViewById(R.id.nasa_fragment_container);
+            recyclerView = view.findViewById(R.id.recycler_view_nasa);
+            LinearLayoutManager lmng = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(lmng);
+            cardAdapter = new NasaCardAdapter(NasaCardView.initItems(getActivity()));
+            recyclerView.setAdapter(cardAdapter);
+            cardAdapter.notifyDataSetChanged();
 
-            apod_item.setOnClickListener(v -> {
-                Log.d(App.TAG, "NasaFragment, apod click");
-                hideListItems();
-                openFragment(new NasaApodFragment());
-            });
+            recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if (cardAdapter.getItemCount() > 0){
+                        hideListItems();
+                        if (position == 0){
+                            openFragment(NasaApodFragment.getInstance());
+                        }else if(position == 1){
+                            openFragment(MarsRoverFragment.getInstance());
+                        }
+                    }
+                }
 
-            rover_item.setOnClickListener(v -> {
-                Log.d(App.TAG, "NasaFragment, rover click");
-                hideListItems();
-                openFragment(new MarsRoverFragment());
-            });
+                @Override
+                public void onLongItemClick(View view, int position) {
+
+                }
+            }));
+
         }
 
         public void hideListItems(){
-            list.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         }
 
         public void showListItems(){
-            list.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
 
         public void openFragment(Fragment _frag){
-            //add back stack
             fm.beginTransaction()
                     .replace(R.id.frame_container, _frag)
-                    //.addToBackStack("1")
+                    .addToBackStack("2")
                     .commit();
         }
     }

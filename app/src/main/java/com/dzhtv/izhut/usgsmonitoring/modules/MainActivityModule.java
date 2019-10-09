@@ -42,25 +42,25 @@ public class MainActivityModule {
     @USGSMonitoringApplicationScope
     @Provides
     public EarthquakeFragment earthquakeFragment(){
-        return new EarthquakeFragment();
+        return EarthquakeFragment.getInstance();
     }
 
     @USGSMonitoringApplicationScope
     @Provides
     public WeatherFragment weatherFragment(){
-        return new WeatherFragment();
+        return WeatherFragment.getInstance();
     }
 
     @USGSMonitoringApplicationScope
     @Provides
     public MarsRoverFragment otherFragment(){
-        return new MarsRoverFragment();
+        return MarsRoverFragment.getInstance();
     }
 
     @USGSMonitoringApplicationScope
     @Provides
     public NasaFragment nasaFragment(){
-        return new NasaFragment();
+        return NasaFragment.newInstance();
     }
 
     @Provides
@@ -75,23 +75,6 @@ public class MainActivityModule {
         return _context;
     }
 
-    /*
-    @Provides
-    public EarthquakePresenter<EarthquakeMvpView> getEarthquakePresenter(){
-        return new EarthquakePresenter<EarthquakeMvpView>();
-    }
-
-    @Provides
-    public WeatherPresenter<WeatherMvpView> getWeatherPresenter(){
-        return new WeatherPresenter<WeatherMvpView>();
-    }
-
-    @USGSMonitoringApplicationScope
-    @Provides
-    public MarsRoverPresenter<MarsRoverView> getMarsRoverPresenter(){
-        return new MarsRoverPresenter<MarsRoverView>();
-    }
-    */
 
     @Provides
     public ActivateGPSDialog provideActivateGPSDialog(){

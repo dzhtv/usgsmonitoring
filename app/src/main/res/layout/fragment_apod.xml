@@ -30,14 +30,30 @@
                     android:layout_margin="10dp"
                     />
 
-                <ImageView
-                    android:id="@+id/photo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/corners_gray_image"
-                    android:padding="1dp"/>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:padding="1dp"/>
+
+                        <ProgressBar
+                            android:id="@+id/image_progress_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:theme="@style/BlueProgressBar"
+                            android:visibility="gone"/>
+
+                </FrameLayout>
+
+
 
                 <TextView
                     android:id="@+id/descriptions"

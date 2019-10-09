@@ -16,6 +16,8 @@ import com.dzhtv.izhut.usgsmonitoring.presenters.WeatherPresenter;
 import com.squareup.picasso.Picasso;
 
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -62,10 +64,16 @@ public class App extends Application {
      * init retrofit api
      */
     private void initRetrofitAPI(){
+        //make logging
+        HttpLoggingInterceptor _interceptor = new HttpLoggingInterceptor();
+        _interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient _client = new OkHttpClient.Builder().addInterceptor(_interceptor).build();
+
         earthquakeApi = new Retrofit.Builder()
                 .baseUrl(Config.EARTHQUAKE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .client(_client)
                 .build();
         earthquakeService = earthquakeApi.create(IEarthquakeApi.class);
 
@@ -73,6 +81,7 @@ public class App extends Application {
                 .baseUrl(Config.WEATHER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .client(_client)
                 .build();
         weatherService = weatherApi.create(IWeatherApi.class);
 
@@ -80,6 +89,7 @@ public class App extends Application {
                 .baseUrl(Config.NASA_URL_MARS_PHOTOS)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .client(_client)
                 .build();
         nasaService = nasaApi.create(INasaApi.class);
     }

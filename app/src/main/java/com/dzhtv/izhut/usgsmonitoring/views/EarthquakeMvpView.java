@@ -11,4 +11,5 @@ public interface EarthquakeMvpView extends MvpView {
     void setEmptyResponseText();
     void hideLoadingIndicator();
     void showNoConnectionMessage();
+    void errorMessage(String errorMessage);
 }

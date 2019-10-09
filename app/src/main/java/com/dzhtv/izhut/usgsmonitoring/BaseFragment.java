@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class BaseFragment extends Fragment {
     protected List<String> neededPermissions;
     protected PermissionsCallback callback;

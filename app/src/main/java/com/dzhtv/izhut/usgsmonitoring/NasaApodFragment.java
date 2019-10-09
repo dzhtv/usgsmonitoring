@@ -19,12 +19,20 @@ import androidx.fragment.app.Fragment;
 
 import com.dzhtv.izhut.usgsmonitoring.presenters.NasaApodPresenter;
 import com.dzhtv.izhut.usgsmonitoring.views.NasaApodView;
+import com.squareup.picasso.Callback;
 
 public class NasaApodFragment extends BaseFragment implements NasaApodView {
+    private static NasaApodFragment instance;
     private View rootView;
     private ViewHolder holder;
     private NasaApodPresenter presenter;
 
+
+    public static NasaApodFragment getInstance(){
+        if (instance == null)
+            instance = new NasaApodFragment();
+        return instance;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,7 +85,12 @@ public class NasaApodFragment extends BaseFragment implements NasaApodView {
 
     @Override
     public void onSetImage(String url) {
-        ((App)getActivity().getApplication()).getPicasso().load(url).into(holder.photo);
+
+        ((App)getActivity().getApplication()).getPicasso()
+                .load(url)
+                .error(R.drawable.nothing_found)
+                .placeholder(R.drawable.animation_progress_black)
+                .into(holder.photo);
     }
 
     @Override
@@ -113,11 +126,12 @@ public class NasaApodFragment extends BaseFragment implements NasaApodView {
         startActivity(picture);
     }
 
+
     public class ViewHolder{
         private TextView title, descriptions, date, errorLabel;
         private ImageView photo;
         private LinearLayout apodContainer, errorConnectionContainer;
-        private ProgressBar progressBar;
+        private ProgressBar progressBar, imageProgressBar;
         private RelativeLayout loadingBox;
 
         public ViewHolder(View view){
@@ -130,6 +144,7 @@ public class NasaApodFragment extends BaseFragment implements NasaApodView {
             errorLabel = view.findViewById(R.id.error_label);
             progressBar = view.findViewById(R.id.progress_bar);
             loadingBox = view.findViewById(R.id.loading_box);
+            imageProgressBar = view.findViewById(R.id.image_progress_bar);
 
             photo.setOnClickListener(v -> {
                 presenter.clickOnPhoto();

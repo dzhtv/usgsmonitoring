@@ -27,6 +27,7 @@ import java.util.List;
 
 
 public class MarsRoverFragment extends BaseFragment implements MarsRoverView {
+    private static MarsRoverFragment instance;
     private View rootView;
     private ViewHolder holder;
     private List<Photo> photoData;
@@ -35,6 +36,12 @@ public class MarsRoverFragment extends BaseFragment implements MarsRoverView {
 
     MarsRoverPresenter presenter;
 
+
+    public static MarsRoverFragment getInstance(){
+        if (instance == null)
+            instance = new MarsRoverFragment();
+        return instance;
+    }
 
     @Nullable
     @Override

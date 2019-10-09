@@ -1,5 +1,8 @@
 package com.dzhtv.izhut.usgsmonitoring.presenters;
 
+import android.util.Log;
+
+import com.dzhtv.izhut.usgsmonitoring.App;
 import com.dzhtv.izhut.usgsmonitoring.Config;
 import com.dzhtv.izhut.usgsmonitoring.contracts.NasaApodMvpPresenter;
 import com.dzhtv.izhut.usgsmonitoring.views.NasaApodView;
@@ -22,6 +25,7 @@ public class NasaApodPresenter<V extends NasaApodView> extends BasePresenter<V> 
     @Override
     public void loadApod(boolean isUpdate) {
         if (currentData != null){
+            Log.d(App.TAG, "APOD, have saved data!");
             initResponse(currentData);
         }else {
             boolean isConnect = getMvpView().checkConnection();

@@ -33,5 +33,10 @@
     <string name="date_label">Дата </string>
     <string name="network_connect">Интернет соединение восстановлено</string>
     <string name="network_disconnect">Соединение отсутствует</string>
+    <string name="please_click_again_to_exit">Нажмите еще раз для выхода</string>
+    <string name="nasa_apod">NASA Apod</string>
+    <string name="mars_rovers_photos">Mars Rovers Photos</string>
+    <string name="apod_description">Astronomy Picture of the Day</string>
+    <string name="mars_rover_description">Image data gathered by NASA`s Curiosity, Opportunity and Spirit rovers on Mars</string>
 
 </resources>
